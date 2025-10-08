@@ -1,29 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import LoadingScreen from '../components/LoadingScreen';
-import LandingPage from '../components/LandingPage';
-import AuthModal from '../components/AuthModal';
-import Dashboard from '../components/Dashboard';
+import { LoginPage, Dashboard } from '../components';
 
-type AppState = 'loading' | 'landing' | 'auth' | 'dashboard';
+type AppState = 'auth' | 'dashboard';
 
 export default function Home() {
-  const [appState, setAppState] = useState<AppState>('loading');
+  const [appState, setAppState] = useState<AppState>('auth');
   const [user, setUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<'consultant' | 'fitter' | null>(null);
-
-  const handleLoadingComplete = () => {
-    setAppState('landing');
-  };
-
-  const handleGetStarted = () => {
-    setAppState('auth');
-  };
-
-  const handleAuthClose = () => {
-    setAppState('landing');
-  };
 
   const handleLogin = (userData: any, role: 'consultant' | 'fitter') => {
     console.log('handleLogin called with:', userData, role);
@@ -37,7 +22,7 @@ export default function Home() {
   const handleLogout = () => {
     setUser(null);
     setUserRole(null);
-    setAppState('landing');
+    setAppState('auth');
   };
 
   // Add debugging for render
@@ -45,19 +30,8 @@ export default function Home() {
 
   return (
     <main>
-      {appState === 'loading' && (
-        <LoadingScreen onComplete={handleLoadingComplete} />
-      )}
-      
-      {appState === 'landing' && (
-        <LandingPage onShowAuth={handleGetStarted} />
-      )}
-      
       {appState === 'auth' && (
-        <AuthModal 
-          onClose={handleAuthClose} 
-          onLogin={handleLogin}
-        />
+        <LoginPage onLogin={handleLogin} />
       )}
       
       {appState === 'dashboard' && user && userRole && (

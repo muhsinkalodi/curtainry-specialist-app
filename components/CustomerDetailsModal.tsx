@@ -39,9 +39,9 @@ export default function CustomerDetailsModal({ order, userRole, onClose }: Custo
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Type:</span>
                 <span className={`text-sm font-medium px-2 py-1 rounded-full ${
-                  order.orderType === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'
+                  (order.orderType || order.type) === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'
                 }`}>
-                  {order.orderType.toUpperCase()}
+                  {(order.orderType || order.type || 'standard').toUpperCase()}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -126,35 +126,35 @@ export default function CustomerDetailsModal({ order, userRole, onClose }: Custo
             <h3 className="text-lg font-medium text-gray-900 mb-3">Curtain Details</h3>
             <div className="bg-blue-50 rounded-lg p-4 space-y-3">
               <div>
-                <h4 className="font-medium text-blue-900">{order.catalogDetails.title}</h4>
-                <p className="text-sm text-blue-700">Serial: {order.catalogDetails.serialNumber}</p>
+                <h4 className="font-medium text-blue-900">{order?.catalogDetails?.title || 'Curtain Details'}</h4>
+                <p className="text-sm text-blue-700">Serial: {order?.catalogDetails?.serialNumber || 'N/A'}</p>
               </div>
               
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-blue-600 font-medium">Composition:</span>
-                  <p className="text-blue-700">{order.catalogDetails.composition}</p>
+                  <p className="text-blue-700">{order?.catalogDetails?.composition || 'Not specified'}</p>
                 </div>
                 <div>
                   <span className="text-blue-600 font-medium">Color:</span>
-                  <p className="text-blue-700">{order.catalogDetails.color}</p>
+                  <p className="text-blue-700">{order?.catalogDetails?.color || 'Not specified'}</p>
                 </div>
                 <div>
                   <span className="text-blue-600 font-medium">Pattern:</span>
-                  <p className="text-blue-700">{order.catalogDetails.pattern}</p>
+                  <p className="text-blue-700">{order?.catalogDetails?.pattern || 'Not specified'}</p>
                 </div>
                 <div>
                   <span className="text-blue-600 font-medium">Price/Meter:</span>
-                  <p className="text-blue-700">₹{order.catalogDetails.pricePerMeter}</p>
+                  <p className="text-blue-700">₹{order?.catalogDetails?.pricePerMeter || 150}</p>
                 </div>
               </div>
               
               <div className="pt-2 border-t border-blue-200">
                 <p className="text-sm text-blue-600">
-                  <span className="font-medium">Manufacturer:</span> {order.catalogDetails.manufacturer}
+                  <span className="font-medium">Manufacturer:</span> {order?.catalogDetails?.manufacturer || 'Not specified'}
                 </p>
                 <p className="text-sm text-blue-600">
-                  <span className="font-medium">Retailer:</span> {order.catalogDetails.retailer}
+                  <span className="font-medium">Retailer:</span> {order?.catalogDetails?.retailer || 'Curtainry Store'}
                 </p>
               </div>
             </div>

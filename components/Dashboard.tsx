@@ -1,16 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { User, Bell, Menu, FileText, UserCircle, LogOut, Star, Home, Calendar, TrendingUp, DollarSign, Inbox, Filter, X, CheckCircle, Clock, Smartphone } from 'lucide-react';
-import OrdersPage from './OrdersPage';
-import SchedulePage from './SchedulePage';
-import RevenuePage from './RevenuePage';
-import AnalysisPage from './AnalysisPage';
-import Profile from './Profile';
 import HomeDashboard from './HomeDashboard';
-import NewRequests from './NewRequests';
-import ProfilePage from './ProfilePage';
-import ARSystem from './ARSystem';
 
 interface DashboardProps {
   userRole: 'consultant' | 'fitter';
@@ -19,35 +12,47 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ userRole, userData, onLogout }: DashboardProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('home');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>('');
   const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month' | 'all'>('all');
 
-  const renderContent = () => {
-    switch (activeTab) {
+  const handleNavigation = (tab: string) => {
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams);
+    params.set('userType', userRole);
+    
+    switch (tab) {
       case 'home':
-        return <HomeDashboard userType={userRole} onNavigate={setActiveTab} />;
+        router.push(`/dashboard?${params.toString()}`);
+        break;
       case 'orders':
-        return <OrdersPage userRole={userRole} userData={userData} />;
+        router.push(`/orders?${params.toString()}`);
+        break;
       case 'requests':
-        // Only fitters can access requests
-        return userRole === 'fitter' ? <NewRequests userRole={userRole} userData={userData} /> : null;
+        router.push(`/requests?${params.toString()}`);
+        break;
       case 'ar-system':
-        // Only consultants can access AR system
-        return userRole === 'consultant' ? <ARSystem userType={userRole} /> : null;
+        router.push(`/ar?${params.toString()}`);
+        break;
       case 'schedule':
-        return <SchedulePage userRole={userRole} userData={userData} />;
+        router.push(`/schedule?${params.toString()}`);
+        break;
       case 'revenue':
-        return <RevenuePage userRole={userRole} userData={userData} />;
-      case 'analysis':
-        return <AnalysisPage userRole={userRole} userData={userData} />;
+        router.push(`/revenue?${params.toString()}`);
+        break;
       case 'profile':
-        return <ProfilePage userType={userRole} />;
+        router.push(`/profile?${params.toString()}`);
+        break;
       default:
-        return null;
+        router.push(`/dashboard?${params.toString()}`);
     }
+  };
+
+  const renderContent = () => {
+    return <HomeDashboard userType={userRole} onNavigate={handleNavigation} />;
   };
 
   return (
@@ -104,12 +109,11 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                   className="flex items-center space-x-2 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-medium text-sm">
+                  <div className="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center">
+                    <span className="text-primary font-medium text-sm">
                       {userData?.name?.charAt(0) || 'U'}
                     </span>
                   </div>
-                  <Menu size={16} />
                 </button>
 
                 {/* Profile Dropdown */}
@@ -117,8 +121,8 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <div className="px-4 py-3 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                          <span className="text-blue-600 font-medium">
+                        <div className="w-12 h-12 bg-primary-light rounded-full flex items-center justify-center">
+                          <span className="text-primary font-medium">
                             {userData?.name?.charAt(0) || 'U'}
                           </span>
                         </div>
@@ -221,7 +225,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                             }}
                             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
                               activeTab === item.id
-                                ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
+                                ? 'bg-primary-light text-primary border-r-2 border-primary'
                                 : 'text-gray-700 hover:bg-gray-100'
                             }`}
                           >
@@ -325,12 +329,12 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-1 py-2">
-        <div className="flex justify-around">
+        <div className="flex justify-around items-center">
           <button
-            onClick={() => setActiveTab('home')}
+            onClick={() => handleNavigation('home')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'home'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-primary bg-primary-light'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -339,10 +343,10 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
           </button>
 
           <button
-            onClick={() => setActiveTab('orders')}
+            onClick={() => handleNavigation('orders')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'orders'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-primary bg-primary-light'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -353,31 +357,35 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
           {/* Role-specific middle tab */}
           {userRole === 'consultant' ? (
             <button
-              onClick={() => setActiveTab('ar-system')}
-              className={`relative flex flex-col items-center space-y-1 py-2 px-3 rounded-xl transition-all duration-500 transform hover:scale-110 ${
+              onClick={() => handleNavigation('ar-system')}
+              className={`relative flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
                 activeTab === 'ar-system'
-                  ? 'text-white bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 shadow-2xl animate-pulse'
-                  : 'text-gray-600 hover:text-purple-600 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 hover:shadow-lg'
+                  ? 'text-purple-600 bg-purple-50'
+                  : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
               }`}
             >
-              {/* Glowing effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl opacity-20 blur-sm animate-pulse"></div>
-              <div className={`relative p-1 rounded-lg ${
-                activeTab === 'ar-system' ? 'bg-white bg-opacity-20' : ''
-              }`}>
-                <Smartphone size={18} className={activeTab === 'ar-system' ? 'drop-shadow-lg' : ''} />
-              </div>
-              <span className="relative text-xs font-bold tracking-wide">AR</span>
-              {/* New badge */}
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-bounce"></div>
+              <Smartphone size={16} />
+              <span className="text-xs font-medium">AR</span>
             </button>
-          ) : null}
+          ) : (
+            <button
+              onClick={() => handleNavigation('requests')}
+              className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
+                activeTab === 'requests'
+                  ? 'text-primary bg-primary-light'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Inbox size={16} />
+              <span className="text-xs font-medium">Requests</span>
+            </button>
+          )}
 
           <button
-            onClick={() => setActiveTab('schedule')}
+            onClick={() => handleNavigation('schedule')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'schedule'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-primary bg-primary-light'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
@@ -386,34 +394,18 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
           </button>
 
           <button
-            onClick={() => setActiveTab('revenue')}
+            onClick={() => handleNavigation('revenue')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'revenue'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-primary bg-primary-light'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             <DollarSign size={16} />
             <span className="text-xs font-medium">Revenue</span>
           </button>
-
-          {userRole === 'fitter' && (
-            <button
-              onClick={() => setActiveTab('analysis')}
-              className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
-                activeTab === 'analysis'
-                  ? 'text-blue-600 bg-blue-50'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <TrendingUp size={16} />
-              <span className="text-xs font-medium">Analysis</span>
-            </button>
-          )}
         </div>
-      </nav>
-
-      {/* Background overlay for mobile menu */}
+      </nav>      {/* Background overlay for mobile menu */}
       {showProfileMenu && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-25 z-40"
