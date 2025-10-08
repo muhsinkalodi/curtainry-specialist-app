@@ -110,11 +110,11 @@ export default function RegistrationSuccessModal({
 
           {/* Next Steps */}
           <div className="bg-blue-50 rounded-lg p-4">
-            <h4 className="font-medium text-blue-900 mb-2">What's Next?</h4>
+            <h4 className="font-medium text-blue-900 mb-2">What&apos;s Next?</h4>
             <ul className="text-sm text-blue-700 space-y-1">
               <li>• Our team will review your application</li>
               <li>• You will receive an email confirmation within 24 hours</li>
-              <li>• We'll get back to you soon with further instructions</li>
+              <li>• We&apos;ll get back to you soon with further instructions</li>
               <li>• Keep an eye on your email for updates</li>
             </ul>
           </div>

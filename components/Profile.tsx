@@ -3,9 +3,24 @@
 import React, { useState } from 'react';
 import { User, Mail, Phone, MapPin, Calendar, Star, Award, DollarSign, Edit3, Save, X } from 'lucide-react';
 
+interface UserData {
+  name?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  joinDate?: string;
+  specialization?: string;
+  experience?: string;
+  rating?: number;
+  completedJobs?: number;
+  totalEarnings?: number;
+  dateOfBirth?: string;
+  enrollmentDate?: string;
+}
+
 interface ProfileProps {
   userRole: 'consultant' | 'fitter';
-  userData: any;
+  userData: UserData;
 }
 
 export default function Profile({ userRole, userData }: ProfileProps) {

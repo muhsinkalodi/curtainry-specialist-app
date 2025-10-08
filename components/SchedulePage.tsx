@@ -3,13 +3,25 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, Plus, MapPin, User, Phone, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
 
-interface SchedulePageProps {
-  userRole: 'consultant' | 'fitter';
-  userData: any;
+interface UserData {
+  name?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  joinDate?: string;
+  specialization?: string;
+  experience?: string;
+  rating?: number;
+  completedJobs?: number;
+  totalEarnings?: number;
 }
 
-const SchedulePage: React.FC<SchedulePageProps> = ({ userRole, userData }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+interface SchedulePageProps {
+  userRole: 'consultant' | 'fitter';
+  userData: UserData;
+}
+
+const SchedulePage: React.FC<SchedulePageProps> = ({ userRole }) => {
   const [selectedWeek, setSelectedWeek] = useState(new Date());
 
   // Time slots - 2 per day as requested
@@ -181,7 +193,7 @@ const SchedulePage: React.FC<SchedulePageProps> = ({ userRole, userData }) => {
 
       {/* Weekly Calendar View */}
       <div className="grid grid-cols-1 gap-4">
-        {weekDates.map((date, index) => {
+        {weekDates.map((date) => {
           const dateStr = date.toISOString().split('T')[0];
           const daySchedule = getScheduleForDate(dateStr);
           const isToday = dateStr === new Date().toISOString().split('T')[0];

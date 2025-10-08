@@ -1,14 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DollarSign, TrendingUp, Calendar, CreditCard, Eye, Download, Filter } from 'lucide-react';
+import { DollarSign, TrendingUp, Calendar, CreditCard, Eye, Download } from 'lucide-react';
+
+interface UserData {
+  name?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  joinDate?: string;
+  specialization?: string;
+  experience?: string;
+  rating?: number;
+  completedJobs?: number;
+  totalEarnings?: number;
+}
 
 interface RevenuePageProps {
   userRole: 'consultant' | 'fitter';
-  userData: any;
+  userData: UserData;
 }
 
-const RevenuePage: React.FC<RevenuePageProps> = ({ userRole, userData }) => {
+const RevenuePage: React.FC<RevenuePageProps> = ({ userRole }) => {
   const [selectedPeriod, setSelectedPeriod] = useState('this_month');
   const [showTransactions, setShowTransactions] = useState(false);
 
@@ -74,7 +87,7 @@ const RevenuePage: React.FC<RevenuePageProps> = ({ userRole, userData }) => {
           {/* Background Pattern */}
           <div className="absolute inset-0 bg-black bg-opacity-10">
             <div className="absolute inset-0" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='15' cy='15' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              backgroundImage: `url(&quot;data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='15' cy='15' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E&quot;)`,
               backgroundSize: '30px 30px'
             }} />
           </div>

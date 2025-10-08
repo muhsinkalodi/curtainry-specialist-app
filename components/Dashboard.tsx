@@ -4,6 +4,13 @@ import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { User, Bell, Menu, FileText, UserCircle, LogOut, Star, Home, Calendar, TrendingUp, DollarSign, Inbox, Filter, X, CheckCircle, Clock, Smartphone } from 'lucide-react';
 import HomeDashboard from './HomeDashboard';
+import OrdersPage from './OrdersPage';
+import SchedulePage from './SchedulePage';
+import RevenuePage from './RevenuePage';
+import Profile from './Profile';
+import ARSystem from './ARSystem';
+import NewRequests from './NewRequests';
+import BackButton from './BackButton';
 
 interface DashboardProps {
   userRole: 'consultant' | 'fitter';
@@ -52,7 +59,77 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
   };
 
   const renderContent = () => {
-    return <HomeDashboard userType={userRole} onNavigate={handleNavigation} />;
+    const handleBackToHome = () => {
+      setActiveTab('home');
+    };
+
+    switch (activeTab) {
+      case 'home':
+        return <HomeDashboard userType={userRole} onNavigate={handleNavigation} />;
+      
+      case 'orders':
+        return (
+          <div>
+            <div className="p-4">
+              <BackButton onClick={handleBackToHome} />
+            </div>
+            <OrdersPage userRole={userRole} userData={userData} />
+          </div>
+        );
+      
+      case 'schedule':
+        return (
+          <div>
+            <div className="p-4">
+              <BackButton onClick={handleBackToHome} />
+            </div>
+            <SchedulePage userRole={userRole} userData={userData} />
+          </div>
+        );
+      
+      case 'revenue':
+        return (
+          <div>
+            <div className="p-4">
+              <BackButton onClick={handleBackToHome} />
+            </div>
+            <RevenuePage userRole={userRole} userData={userData} />
+          </div>
+        );
+      
+      case 'profile':
+        return (
+          <div>
+            <div className="p-4">
+              <BackButton onClick={handleBackToHome} />
+            </div>
+            <Profile userRole={userRole} userData={userData} />
+          </div>
+        );
+      
+      case 'ar-system':
+        return (
+          <div>
+            <div className="p-4">
+              <BackButton onClick={handleBackToHome} />
+            </div>
+            <ARSystem userType={userRole} />
+          </div>
+        );
+      
+      case 'requests':
+        return (
+          <div>
+            <div className="p-4">
+              <BackButton onClick={handleBackToHome} />
+            </div>
+            <NewRequests userRole={userRole} userData={userData} />
+          </div>
+        );
+      
+      default:
+        return <HomeDashboard userType={userRole} onNavigate={handleNavigation} />;
+    }
   };
 
   return (
@@ -334,8 +411,8 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
             onClick={() => handleNavigation('home')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'home'
-                ? 'text-primary bg-primary-light'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-blue-600 bg-blue-50'
+                : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
           >
             <Home size={16} />
@@ -346,8 +423,8 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
             onClick={() => handleNavigation('orders')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'orders'
-                ? 'text-primary bg-primary-light'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-blue-600 bg-blue-50'
+                : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
           >
             <FileText size={16} />
@@ -360,8 +437,8 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
               onClick={() => handleNavigation('ar-system')}
               className={`relative flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
                 activeTab === 'ar-system'
-                  ? 'text-purple-600 bg-purple-50'
-                  : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
               <Smartphone size={16} />
@@ -372,8 +449,8 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
               onClick={() => handleNavigation('requests')}
               className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
                 activeTab === 'requests'
-                  ? 'text-primary bg-primary-light'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
             >
               <Inbox size={16} />
@@ -385,8 +462,8 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
             onClick={() => handleNavigation('schedule')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'schedule'
-                ? 'text-primary bg-primary-light'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-blue-600 bg-blue-50'
+                : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
           >
             <Calendar size={16} />
@@ -397,8 +474,8 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
             onClick={() => handleNavigation('revenue')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
               activeTab === 'revenue'
-                ? 'text-primary bg-primary-light'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-blue-600 bg-blue-50'
+                : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
           >
             <DollarSign size={16} />

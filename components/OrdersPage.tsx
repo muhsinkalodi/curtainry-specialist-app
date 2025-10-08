@@ -370,13 +370,13 @@ export default function OrdersPage({ userRole, userData }: OrdersPageProps) {
             </div>
           )}
 
-          {/* Room Measurements - Show measurements using the dedicated component */}
-          <MeasurementDisplay 
-            rooms={selectedOrder.rooms || []} 
-            orderDetails={selectedOrder}
-          />
-
-          {/* Action Buttons */}
+          {/* Room Measurements - Show measurements using the dedicated component - Only for consultants */}
+          {userRole === 'consultant' && (
+            <MeasurementDisplay 
+              rooms={selectedOrder.rooms || []}
+              orderDetails={selectedOrder}
+            />
+          )}          {/* Action Buttons */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -494,8 +494,8 @@ export default function OrdersPage({ userRole, userData }: OrdersPageProps) {
           confirmButtonColor={confirmationAction?.action === 'reject' ? 'bg-red-600 hover:bg-red-700' : 'bg-primary hover:bg-primary-dark'}
         />
         
-        {/* Measurement Modal for detailed view */}
-        {showMeasurementModal && selectedOrder && (
+        {/* Measurement Modal for detailed view - Only for consultants */}
+        {userRole === 'consultant' && showMeasurementModal && selectedOrder && (
           <MeasurementModal
             order={selectedOrder}
             onClose={() => setShowMeasurementModal(false)}
@@ -691,8 +691,8 @@ export default function OrdersPage({ userRole, userData }: OrdersPageProps) {
         )}
       </div>
 
-      {/* Measurement Modal */}
-      {showMeasurementModal && selectedOrder && (
+      {/* Measurement Modal - Only for consultants */}
+      {userRole === 'consultant' && showMeasurementModal && selectedOrder && (
         <MeasurementModal
           order={selectedOrder}
           onClose={() => setShowMeasurementModal(false)}
