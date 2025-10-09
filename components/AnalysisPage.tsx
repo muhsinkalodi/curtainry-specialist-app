@@ -9,7 +9,6 @@ interface AnalysisPageProps {
 }
 
 const AnalysisPage: React.FC<AnalysisPageProps> = ({ userRole, userData }) => {
-  const [selectedPeriod, setSelectedPeriod] = useState('this_month');
 
   // Sample analytics data
   const analyticsData = {
@@ -41,7 +40,7 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({ userRole, userData }) => {
     }
   };
 
-  const currentData = analyticsData[selectedPeriod as keyof typeof analyticsData];
+  const currentData = analyticsData.this_month;
 
   const getPerformanceColor = (score: number) => {
     if (score >= 90) return 'text-green-600 bg-green-100';
@@ -74,15 +73,6 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({ userRole, userData }) => {
               Track your performance metrics and growth insights
             </p>
           </div>
-          <select
-            value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-          >
-            <option value="this_month">This Month</option>
-            <option value="last_month">Last Month</option>
-            <option value="this_quarter">This Quarter</option>
-          </select>
         </div>
       </div>
 

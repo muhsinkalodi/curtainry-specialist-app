@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { User, Bell, Menu, FileText, UserCircle, LogOut, Star, Home, Calendar, TrendingUp, DollarSign, Inbox, Filter, X, CheckCircle, Clock, Smartphone } from 'lucide-react';
+import { User, Bell, Menu, FileText, UserCircle, LogOut, Star, Home, Calendar, TrendingUp, DollarSign, Inbox, X, CheckCircle, Clock, Smartphone } from 'lucide-react';
 import HomeDashboard from './HomeDashboard';
 import OrdersPage from './OrdersPage';
 import SchedulePage from './SchedulePage';
@@ -24,7 +24,6 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
   const [activeTab, setActiveTab] = useState('home');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month' | 'all'>('all');
 
   const handleNavigation = (tab: string) => {
     setActiveTab(tab);
@@ -155,21 +154,6 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                 <h1 className="text-lg font-semibold text-gray-900">Curtainry</h1>
                 <p className="text-xs text-gray-500 capitalize">{userRole} Dashboard</p>
               </div>
-            </div>
-
-            {/* Center - Calendar Filter */}
-            <div className="hidden md:flex items-center space-x-2">
-              <Filter size={16} className="text-gray-500" />
-              <select 
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value as any)}
-                className="text-sm border border-gray-200 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="all">All Time</option>
-                <option value="today">Today</option>
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-              </select>
             </div>
 
             {/* Right Side Icons */}
@@ -341,34 +325,6 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                           </button>
                         </>
                       )}
-                    </div>
-                  </div>
-
-                  {/* Calendar Filter */}
-                  <div className="mb-6">
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Date Filter</h3>
-                    <div className="space-y-2">
-                      {[
-                        { value: 'today', label: 'Today' },
-                        { value: 'week', label: 'This Week' },
-                        { value: 'month', label: 'This Month' },
-                        { value: 'all', label: 'All Time' },
-                      ].map((filter) => (
-                        <button
-                          key={filter.value}
-                          onClick={() => setDateFilter(filter.value as any)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors ${
-                            dateFilter === filter.value
-                              ? 'bg-green-50 text-green-600'
-                              : 'text-gray-700 hover:bg-gray-100'
-                          }`}
-                        >
-                          <span className="font-medium">{filter.label}</span>
-                          {dateFilter === filter.value && (
-                            <CheckCircle size={16} className="text-green-600" />
-                          )}
-                        </button>
-                      ))}
                     </div>
                   </div>
                 </div>

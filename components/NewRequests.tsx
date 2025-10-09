@@ -9,7 +9,6 @@ interface NewRequestsProps {
 }
 
 const NewRequests: React.FC<NewRequestsProps> = ({ userRole, userData }) => {
-  const [filter, setFilter] = useState('all'); // 'all', 'high', 'medium', 'low'
 
   // Sample new requests data - role-specific
   const getRequestsData = () => {
@@ -126,10 +125,6 @@ const NewRequests: React.FC<NewRequestsProps> = ({ userRole, userData }) => {
 
   const newRequests = getRequestsData();
 
-  const filteredRequests = filter === 'all' 
-    ? newRequests 
-    : newRequests.filter(req => req.priority === filter);
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -185,19 +180,6 @@ const NewRequests: React.FC<NewRequestsProps> = ({ userRole, userData }) => {
                   : 'Review installation and repair requests'}
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-              <span className="text-sm text-gray-500 font-medium">Filter by Priority:</span>
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white shadow-sm min-w-[150px]"
-              >
-                <option value="all">All Priorities</option>
-                <option value="high">High Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="low">Low Priority</option>
-              </select>
-            </div>
           </div>
 
           {/* Stats */}
@@ -222,20 +204,18 @@ const NewRequests: React.FC<NewRequestsProps> = ({ userRole, userData }) => {
         </div>
 
         {/* Requests List */}
-        <div className="space-y-6">{filteredRequests.length === 0 ? (
+        <div className="space-y-6">{newRequests.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Eye size={40} className="text-gray-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No requests found</h3>
             <p className="text-gray-500 max-w-md mx-auto">
-              {filter === 'all' 
-                ? 'No new requests at the moment. Check back later or adjust your availability settings.' 
-                : `No ${filter} priority requests available. Try checking other priority levels.`}
+              No new requests at the moment. Check back later or adjust your availability settings.
             </p>
           </div>
         ) : (
-          filteredRequests.map((request) => (
+          newRequests.map((request) => (
             <div
               key={request.id}
               className={`rounded-xl border-l-4 bg-white shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${getPriorityColor(request.priority)}`}

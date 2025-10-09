@@ -22,7 +22,6 @@ interface RevenuePageProps {
 }
 
 const RevenuePage: React.FC<RevenuePageProps> = ({ userRole }) => {
-  const [selectedPeriod, setSelectedPeriod] = useState('this_month');
   const [showTransactions, setShowTransactions] = useState(false);
 
   // Sample revenue data
@@ -56,14 +55,11 @@ const RevenuePage: React.FC<RevenuePageProps> = ({ userRole }) => {
     }
   };
 
-  const currentData = revenueData[selectedPeriod as keyof typeof revenueData];
+  const currentData = revenueData.this_month;
 
   const getGrowthPercentage = () => {
-    if (selectedPeriod === 'this_month') {
-      const growth = ((currentData.total - revenueData.last_month.total) / revenueData.last_month.total) * 100;
-      return growth.toFixed(1);
-    }
-    return '15.2'; // Default growth
+    const growth = ((currentData.total - revenueData.last_month.total) / revenueData.last_month.total) * 100;
+    return growth.toFixed(1);
   };
 
   const getStatusColor = (status: string) => {
@@ -108,15 +104,6 @@ const RevenuePage: React.FC<RevenuePageProps> = ({ userRole }) => {
             </div>
             
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <select
-                value={selectedPeriod}
-                onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="px-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:ring-2 focus:ring-white focus:ring-opacity-50 focus:border-transparent backdrop-blur-sm text-sm font-medium min-w-[140px]"
-              >
-                <option value="this_month" className="text-gray-900">This Month</option>
-                <option value="last_month" className="text-gray-900">Last Month</option>
-                <option value="this_quarter" className="text-gray-900">This Quarter</option>
-              </select>
               <button className="flex items-center justify-center space-x-2 px-6 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 text-white border border-white border-opacity-30 rounded-xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm font-medium min-w-[120px]">
                 <Download size={16} />
                 <span>Export</span>
