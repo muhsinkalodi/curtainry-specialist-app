@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { User, Bell, Menu, FileText, UserCircle, LogOut, Star, Home, Calendar, TrendingUp, DollarSign, Inbox, X, CheckCircle, Clock, Smartphone } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { User, Bell, Menu, FileText, UserCircle, LogOut, Star, Home, Calendar, TrendingUp, DollarSign, Inbox, X, CheckCircle, Clock, Smartphone, ArrowLeft } from 'lucide-react';
 import HomeDashboard from './HomeDashboard';
 import OrdersPage from './OrdersPage';
 import SchedulePage from './SchedulePage';
@@ -10,7 +10,6 @@ import RevenuePage from './RevenuePage';
 import Profile from './Profile';
 import ARSystem from './ARSystem';
 import NewRequests from './NewRequests';
-import BackButton from './BackButton';
 
 interface DashboardProps {
   userRole: 'consultant' | 'fitter';
@@ -21,12 +20,26 @@ interface DashboardProps {
 export default function Dashboard({ userRole, userData, onLogout }: DashboardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState('home');
+  const pathname = usePathname();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
 
+  // Determine current page from pathname
+  const getCurrentPage = () => {
+    if (pathname === '/dashboard' || pathname === '/') return 'home';
+    if (pathname === '/orders') return 'orders';
+    if (pathname.startsWith('/orders/')) return 'order-detail';
+    if (pathname === '/ar') return 'ar-system';
+    if (pathname === '/requests') return 'requests';
+    if (pathname === '/schedule') return 'schedule';
+    if (pathname === '/revenue') return 'revenue';
+    if (pathname === '/profile') return 'profile';
+    return 'home';
+  };
+
+  const currentPage = getCurrentPage();
+
   const handleNavigation = (tab: string) => {
-    setActiveTab(tab);
     const params = new URLSearchParams(searchParams);
     params.set('userType', userRole);
     
@@ -57,21 +70,38 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
     }
   };
 
-  const renderContent = () => {
-    const handleBackToHome = () => {
-      setActiveTab('home');
-    };
+  const handleBack = () => {
+    router.back();
+  };
 
-    switch (activeTab) {
+  const renderBackButton = () => {
+    if (currentPage === 'home') return null;
+    
+    return (
+      <div className="p-4">
+        <button
+          onClick={handleBack}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group"
+        >
+          <ArrowLeft 
+            size={20} 
+            className="group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" 
+          />
+          <span className="font-medium">Back</span>
+        </button>
+      </div>
+    );
+  };
+
+  const renderContent = () => {
+    switch (currentPage) {
       case 'home':
         return <HomeDashboard userType={userRole} />;
       
       case 'orders':
         return (
           <div>
-            <div className="p-4">
-              <BackButton onClick={handleBackToHome} />
-            </div>
+            {renderBackButton()}
             <OrdersPage userRole={userRole} userData={userData} />
           </div>
         );
@@ -79,9 +109,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
       case 'schedule':
         return (
           <div>
-            <div className="p-4">
-              <BackButton onClick={handleBackToHome} />
-            </div>
+            {renderBackButton()}
             <SchedulePage userRole={userRole} userData={userData} />
           </div>
         );
@@ -89,9 +117,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
       case 'revenue':
         return (
           <div>
-            <div className="p-4">
-              <BackButton onClick={handleBackToHome} />
-            </div>
+            {renderBackButton()}
             <RevenuePage userRole={userRole} userData={userData} />
           </div>
         );
@@ -99,9 +125,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
       case 'profile':
         return (
           <div>
-            <div className="p-4">
-              <BackButton onClick={handleBackToHome} />
-            </div>
+            {renderBackButton()}
             <Profile userRole={userRole} userData={userData} />
           </div>
         );
@@ -109,9 +133,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
       case 'ar-system':
         return (
           <div>
-            <div className="p-4">
-              <BackButton onClick={handleBackToHome} />
-            </div>
+            {renderBackButton()}
             <ARSystem userType={userRole} />
           </div>
         );
@@ -119,9 +141,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
       case 'requests':
         return (
           <div>
-            <div className="p-4">
-              <BackButton onClick={handleBackToHome} />
-            </div>
+            {renderBackButton()}
             <NewRequests userRole={userRole} userData={userData} />
           </div>
         );
@@ -200,7 +220,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                     
                     <button 
                       onClick={() => {
-                        setActiveTab('profile');
+                        handleNavigation('profile');
                         setShowProfileMenu(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
@@ -271,7 +291,6 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                         const commonItems = [
                           { id: 'schedule', label: 'Schedule', icon: Calendar },
                           { id: 'revenue', label: 'Revenue', icon: DollarSign },
-                          { id: 'analysis', label: 'Analysis', icon: TrendingUp },
                         ];
                         
                         return [...baseItems, ...roleSpecificItems, ...commonItems];
@@ -281,11 +300,11 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                           <button
                             key={item.id}
                             onClick={() => {
-                              setActiveTab(item.id);
+                              handleNavigation(item.id);
                               setShowSidebar(false);
                             }}
                             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                              activeTab === item.id
+                              currentPage === item.id
                                 ? 'bg-primary-light text-primary border-r-2 border-primary'
                                 : 'text-gray-700 hover:bg-gray-100'
                             }`}
@@ -297,36 +316,6 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
                       })}
                     </div>
                   </div>
-
-                  {/* Role-specific Quick Actions */}
-                  <div className="mb-6">
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Quick Actions</h3>
-                    <div className="space-y-2">
-                      {userRole === 'consultant' ? (
-                        <>
-                          <button className="w-full flex items-center space-x-3 px-3 py-2 text-left text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                            <User size={18} />
-                            <span className="font-medium">New Consultation</span>
-                          </button>
-                          <button className="w-full flex items-center space-x-3 px-3 py-2 text-left text-teal-600 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors">
-                            <Star size={18} />
-                            <span className="font-medium">Client Reviews</span>
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="w-full flex items-center space-x-3 px-3 py-2 text-left text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
-                            <CheckCircle size={18} />
-                            <span className="font-medium">New Installation</span>
-                          </button>
-                          <button className="w-full flex items-center space-x-3 px-3 py-2 text-left text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
-                            <Clock size={18} />
-                            <span className="font-medium">Repair Jobs</span>
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -334,7 +323,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
               <div className="p-4 border-t border-gray-200">
                 <button 
                   onClick={() => {
-                    setActiveTab('profile');
+                    handleNavigation('profile');
                     setShowSidebar(false);
                   }}
                   className="w-full flex items-center space-x-3 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -366,7 +355,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
           <button
             onClick={() => handleNavigation('home')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
-              activeTab === 'home'
+              currentPage === 'home'
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
@@ -378,7 +367,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
           <button
             onClick={() => handleNavigation('orders')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
-              activeTab === 'orders'
+              currentPage === 'orders'
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
@@ -392,7 +381,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
             <button
               onClick={() => handleNavigation('ar-system')}
               className={`relative flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
-                activeTab === 'ar-system'
+                currentPage === 'ar-system'
                   ? 'text-blue-600 bg-blue-50'
                   : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
@@ -404,7 +393,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
             <button
               onClick={() => handleNavigation('requests')}
               className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
-                activeTab === 'requests'
+                currentPage === 'requests'
                   ? 'text-blue-600 bg-blue-50'
                   : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
               }`}
@@ -417,7 +406,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
           <button
             onClick={() => handleNavigation('schedule')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
-              activeTab === 'schedule'
+              currentPage === 'schedule'
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
@@ -429,7 +418,7 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
           <button
             onClick={() => handleNavigation('revenue')}
             className={`flex flex-col items-center space-y-1 py-2 px-2 rounded-lg transition-colors ${
-              activeTab === 'revenue'
+              currentPage === 'revenue'
                 ? 'text-blue-600 bg-blue-50'
                 : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
             }`}
@@ -438,7 +427,9 @@ export default function Dashboard({ userRole, userData, onLogout }: DashboardPro
             <span className="text-xs font-medium">Revenue</span>
           </button>
         </div>
-      </nav>      {/* Background overlay for mobile menu */}
+      </nav>
+
+      {/* Background overlay for mobile menu */}
       {showProfileMenu && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-25 z-40"

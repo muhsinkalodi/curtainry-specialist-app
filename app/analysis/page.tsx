@@ -2,10 +2,11 @@
 
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import HomeDashboard from '../../components/HomeDashboard';
+import AnalysisPage from '../../components/AnalysisPage';
+import BackButton from '../../components/BackButton';
 import BottomNavigation from '../../components/BottomNavigation';
 
-function DashboardContent() {
+function AnalysisContent() {
   const searchParams = useSearchParams();
   const userRole = (searchParams.get('userType') as 'consultant' | 'fitter') || 'consultant';
 
@@ -18,23 +19,26 @@ function DashboardContent() {
 
   return (
     <div className="pb-16">
-      <HomeDashboard userType={userRole} />
-      <BottomNavigation userRole={userRole} currentPage="/dashboard" />
+      <div className="p-4">
+        <BackButton fallbackUrl={`/dashboard?userType=${userRole}`} />
+      </div>
+      <AnalysisPage userRole={userRole} userData={userData} />
+      <BottomNavigation userRole={userRole} currentPage="/analysis" />
     </div>
   );
 }
 
-export default function DashboardPage() {
+export default function AnalysisPageRoute() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Performance Analysis...</p>
         </div>
       </div>
     }>
-      <DashboardContent />
+      <AnalysisContent />
     </Suspense>
   );
 }

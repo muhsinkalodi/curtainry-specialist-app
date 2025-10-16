@@ -1,14 +1,45 @@
 'use client';
 
 import React from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { TrendingUp, Calendar, DollarSign, Star, Users, CheckCircle, Clock, Award, MapPin, Phone, Inbox } from 'lucide-react';
 
 interface HomeDashboardProps {
   userType: 'consultant' | 'fitter';
-  onNavigate?: (tab: string) => void;
 }
 
-const HomeDashboard: React.FC<HomeDashboardProps> = ({ userType, onNavigate }) => {
+const HomeDashboard: React.FC<HomeDashboardProps> = ({ userType }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handleNavigation = (tab: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('userType', userType);
+    
+    switch (tab) {
+      case 'orders':
+        router.push(`/orders?${params.toString()}`);
+        break;
+      case 'requests':
+        router.push(`/requests?${params.toString()}`);
+        break;
+      case 'ar-system':
+        router.push(`/ar?${params.toString()}`);
+        break;
+      case 'schedule':
+        router.push(`/schedule?${params.toString()}`);
+        break;
+      case 'revenue':
+        router.push(`/revenue?${params.toString()}`);
+        break;
+      case 'profile':
+        router.push(`/profile?${params.toString()}`);
+        break;
+      default:
+        router.push(`/dashboard?${params.toString()}`);
+    }
+  };
+
   // Mock user data based on role
   const userData = {
     name: userType === 'consultant' ? 'Sarah Chen' : 'Mike Rodriguez',
@@ -133,7 +164,7 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({ userType, onNavigate }) =
         <div className="relative overflow-hidden bg-gradient-to-r from-emerald-400 to-teal-500 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
           <div 
             className="flex items-center justify-between p-4 cursor-pointer"
-            onClick={() => onNavigate?.(userType === 'consultant' ? 'orders' : 'requests')}
+            onClick={() => handleNavigation(userType === 'consultant' ? 'orders' : 'requests')}
           >
             {/* Background pattern */}
             <div className="absolute inset-0 bg-white bg-opacity-10">
@@ -177,7 +208,7 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({ userType, onNavigate }) =
         {userType === 'consultant' && (
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl p-4 text-white cursor-pointer hover:shadow-lg transform hover:scale-105 transition-all duration-300"
-                 onClick={() => onNavigate?.('revenue')}>
+                 onClick={() => handleNavigation('revenue')}>
               <div className="flex items-center justify-between mb-2">
                 <TrendingUp size={20} className="opacity-80" />
                 <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full">Growth</span>
@@ -187,7 +218,7 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({ userType, onNavigate }) =
             </div>
             
             <div className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl p-4 text-white cursor-pointer hover:shadow-lg transform hover:scale-105 transition-all duration-300"
-                 onClick={() => onNavigate?.('revenue')}>
+                 onClick={() => handleNavigation('revenue')}>
               <div className="flex items-center justify-between mb-2">
                 <Star size={20} className="opacity-80" />
                 <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full">Rating</span>
@@ -197,7 +228,7 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({ userType, onNavigate }) =
             </div>
             
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 text-white cursor-pointer hover:shadow-lg transform hover:scale-105 transition-all duration-300"
-                 onClick={() => onNavigate?.('schedule')}>
+                 onClick={() => handleNavigation('schedule')}>
               <div className="flex items-center justify-between mb-2">
                 <Clock size={20} className="opacity-80" />
                 <span className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full">Response</span>
@@ -233,7 +264,7 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({ userType, onNavigate }) =
             </div>
             <div className="flex-shrink-0 w-full lg:w-auto">
               <button 
-                onClick={() => onNavigate?.('requests')}
+                onClick={() => handleNavigation('requests')}
                 className="w-full lg:w-auto bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2 min-w-[160px]"
               >
                 <Inbox size={18} />
